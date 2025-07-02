@@ -1,13 +1,13 @@
 import ErrorHandler from "../middlewares/errorMiddleware.js"
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js"
-import { UserModel } from "../models/userModel.js"
+// import { UserModel } from "../models/userModel.js"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 
-import { sendVerificationCode } from "../utils/sendVerificationCode.js"
-import { sendToken } from "../utils/sendToken.js"
-import { sendEmail } from "../utils/sendEmail.js"
-import { generateForgotpasswordEmailTemplate } from "../utils/emailTemplate.js"
+// import { sendVerificationCode } from "../utils/sendVerificationCode.js"
+// import { sendToken } from "../utils/sendToken.js"
+// import { sendEmail } from "../utils/sendEmail.js"
+// import { generateForgotpasswordEmailTemplate } from "../utils/emailTemplate.js"
 
 export const register = catchAsyncErrors(
 
