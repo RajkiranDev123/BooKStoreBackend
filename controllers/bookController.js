@@ -42,6 +42,7 @@ export const getAllBooks = catchAsyncErrors(async (req, res, next) => {
 export const getBookById = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
+
     try {
         const book = await BookModel.findById(id)
 
@@ -55,6 +56,42 @@ export const getBookById = catchAsyncErrors(async (req, res, next) => {
     }
 
 })
+
+// update book by id
+
+export const updateBookById = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+    const { title, author, description, price, quantity, genre, publishedYear } = req.body
+    if (!title || !author || !description || !price || !quantity || !genre || !publishedYear) return next(new ErrorHandler("All fields are required", 400))
+    if (!id) return next(new ErrorHandler("Book id is missing!", 400))
+    try {
+        const book = await BookModel.findById(id)
+        if (!book) return next(new ErrorHandler("Book not found with this id!", 400))
+
+        const updatedBook = await BookModel.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    title: title, author: author, description: description, price: price,
+                    quantity: quantity, genre: genre, publishedYear: publishedYear
+                }
+            },
+
+            { new: true }
+        )
+
+
+        res.status(200).json({
+            success: true, message: "Book updated successfully!", updatedBook
+        })
+    } catch (error) {
+        return next(new ErrorHandler("Internal Server Error", 500))
+    }
+
+})
+
+
 
 
 export const deleteBook = catchAsyncErrors(async (req, res, next) => {
