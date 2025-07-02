@@ -1,5 +1,5 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js"
-import { BookModel } from "../models/bookModel.js"
+
 import ErrorHandler from "../middlewares/errorMiddleware.js"
 import { readFile, writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,7 +20,7 @@ export const fbpAddBook = catchAsyncErrors(async (req, res, next) => {
         const filePath = `${getDir}/jsonData/books.json`
         const data = await readFile(filePath, 'utf-8');
         const allBooks = JSON.parse(data);
-        let bookObj = await BookModel.create({ ...req.body, id, userId: req.user._id })
+        let bookObj = { ...req.body, id: id, userId: req.user._id }
         allBooks.books.push(bookObj);
         await writeFile(filePath, JSON.stringify(allBooks, null, 2), 'utf-8');
         return res.status(201).json({
@@ -33,13 +33,22 @@ export const fbpAddBook = catchAsyncErrors(async (req, res, next) => {
 
 //retrieve all books
 export const fbpGetAllBooks = catchAsyncErrors(async (req, res, next) => {
+    const genre = req.query.genre || ""
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
     try {
+
         const filePath = `${getDir}/jsonData/books.json`
         const data = await readFile(filePath, 'utf-8');
         const allBooks = JSON.parse(data);
+
+        let result = genre ? allBooks.books.filter(e => e.genre.toLowerCase() == genre.toLowerCase()) : allBooks.books
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        const finalResult = result.slice(start, end);
         return res.status(201).json({
-            success: true, message: "All books fetched!", books: allBooks.books
+            success: true, message: "All books fetched!", books: finalResult
         })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))

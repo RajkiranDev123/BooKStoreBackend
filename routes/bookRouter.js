@@ -19,8 +19,13 @@ router.delete("/delete/:id", isAuthenticated, isAuthorized("Admin"), deleteBook)
 
 //File-Based Persistence routes (fbp)
 router.post("/fbp/admin/add-book", isAuthenticated, isAuthorized("Admin"), fbpAddBook)
+
 router.get("/fbp/admin/get-all-books", isAuthenticated, isAuthorized("Admin"), fbpGetAllBooks)
+// test it : http://localhost:3000/api/v1/book/fbp/admin/get-all-books?genreancient=&page=2&limit=10
+
 router.delete("/fbp/admin/delete-book/:id", isAuthenticated, isAuthorized("Admin"), fbpDeleteBook)
+router.delete("/fbp/admin/update-book/:id", isAuthenticated, isAuthorized("Admin"), fbpDeleteBook)
+
 
 
 
