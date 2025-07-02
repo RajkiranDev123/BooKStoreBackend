@@ -1,0 +1,14 @@
+{
+  "books": [
+    {
+      "title": "Math 2",
+      "author": "Raj4",
+      "description": "Great book to practice4!",
+      "price": "104",
+      "quantity": 4,
+      "genre": "fiction",
+      "publishedYear": "2003",
+      "id": "619fd086-3b52-4be1-ae70-635e3bbc661a"
+    }
+  ]
+}
