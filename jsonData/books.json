@@ -1,14 +1,19 @@
 {
   "books": [
     {
-      "title": "Math 2",
-      "author": "Raj4",
-      "description": "Great book to practice4!",
-      "price": "104",
+      "title": "Math 1",
+      "author": "Raj1",
+      "description": "Great book to practice1!",
+      "price": 104,
       "quantity": 4,
-      "genre": "fiction",
-      "publishedYear": "2003",
-      "id": "619fd086-3b52-4be1-ae70-635e3bbc661a"
+      "publishedYear": 2003,
+      "genre": "thinking",
+      "availability": true,
+      "userId": "685c90af8bb64c82337a5272",
+      "_id": "6865430485518dada6d0955e",
+      "createdAt": "2025-07-02T14:32:36.428Z",
+      "updatedAt": "2025-07-02T14:32:36.428Z",
+      "__v": 0
     }
   ]
 }
