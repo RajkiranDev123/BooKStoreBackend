@@ -12,10 +12,10 @@ import ErrorHandler from "../middlewares/errorMiddleware.js"
 export const addBook = catchAsyncErrors(async (req, res, next) => {
 
     try {
-        const { title, author, description, price, quantity } = req.body
-        if (!title || !author || !description || !price || !quantity) return next(new ErrorHandler("All fields are required", 400))
+        const { title, author, description, price, quantity, genre, publishedYear } = req.body
+        if (!title || !author || !description || !price || !quantity || !genre || !publishedYear) return next(new ErrorHandler("All fields are required", 400))
         const book = await BookModel.create({
-            title, author, description, price, quantity
+            title, author, description, price, quantity, genre, publishedYear, userId: req.user._id
         })
         return res.status(201).json({
             success: true, message: "Book added!", book
@@ -42,10 +42,11 @@ export const getAllBooks = catchAsyncErrors(async (req, res, next) => {
 export const getBookById = catchAsyncErrors(async (req, res, next) => {
 
     const { id } = req.params
-    const book = await BookModel.findById(id)
-
     try {
-        const books = await BookModel.find()
+        const book = await BookModel.findById(id)
+
+        if (!book) return next(new ErrorHandler("Book not found with this id!", 400))
+
         res.status(200).json({
             success: true, message: "Book fetched successfully!", book
         })

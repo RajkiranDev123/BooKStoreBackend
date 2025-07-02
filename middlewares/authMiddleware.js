@@ -13,12 +13,8 @@ export const isAuthenticated = catchAsyncErrors(
         console.log("from isAuthenticated==>", decoded)
         // req.user=decoded
         req.user = await UserModel.findById(decoded?.id)
-        console.log("user frpm auth middleqware==>",req.user)
-
-
+        console.log("user from auth middleware==>",req.user)
         next()
-
-
     }
 )
 
