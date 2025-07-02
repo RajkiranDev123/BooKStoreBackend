@@ -37,6 +37,24 @@ export const getAllBooks = catchAsyncErrors(async (req, res, next) => {
 
 })
 
+// get book by id
+
+export const getBookById = catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params
+    const book = await BookModel.findById(id)
+
+    try {
+        const books = await BookModel.find()
+        res.status(200).json({
+            success: true, message: "Book fetched successfully!", book
+        })
+    } catch (error) {
+        return next(new ErrorHandler("Internal Server Error", 500))
+    }
+
+})
+
 
 export const deleteBook = catchAsyncErrors(async (req, res, next) => {
     try {

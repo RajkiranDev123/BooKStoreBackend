@@ -1,6 +1,6 @@
 import { isAuthenticated, isAuthorized } from "../middlewares/authMiddleware.js"
 
-import { addBook, getAllBooks, deleteBook } from "../controllers/bookController.js"
+import { addBook, getAllBooks, deleteBook, getBookById } from "../controllers/bookController.js"
 
 import express from "express"
 
@@ -9,7 +9,12 @@ const router = express.Router()
 
 router.post("/admin/add", isAuthenticated, isAuthorized("Admin"), addBook)
 router.get("/all", isAuthenticated, getAllBooks)
+router.get("/get-book/:id", isAuthenticated, getBookById)
+
 router.delete("/delete/:id", isAuthenticated, isAuthorized("Admin"), deleteBook)
+
+
+
 
 
 
