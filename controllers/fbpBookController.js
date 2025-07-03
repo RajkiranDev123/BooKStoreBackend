@@ -15,26 +15,26 @@ export const AddBook = catchAsyncErrors(async (req, res, next) => {
     try {
         const { title, author, description, price, quantity, genre, publishedYear } = req.body
         if (!title || !author || !description || !price || !quantity || !genre || !publishedYear) return next(new ErrorHandler("All fields are required", 400))
-        console.log(req.decodedEmail)
+        // console.log(req.decodedEmail)
 
         const id = uuidv4();
         const filePath = `${getDir}/jsonData/books.json`
         const data = await readFile(filePath, 'utf-8');
         const allBooks = JSON.parse(data);
-        let bookObj = { ...req.body, id: id }
+        let bookObj = { ...req.body, userId: req.userId, id: id }
         allBooks.books.push(bookObj);
         await writeFile(filePath, JSON.stringify(allBooks, null, 2), 'utf-8');
         return res.status(201).json({
-            success: true, message: "Book added !", bookObj
+            success: true, message: "Book added !", book: bookObj
         })
     } catch (error) {
-        return next(new ErrorHandler(error.message, 500))
+        return next(new ErrorHandler("Internal Server Error", 500))
     }
 })
 
 //retrieve all books
 export const GetAllBooks = catchAsyncErrors(async (req, res, next) => {
-    const genre = req.query.genre || ""
+    const genre = req.query.genre || "all"
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
@@ -44,11 +44,11 @@ export const GetAllBooks = catchAsyncErrors(async (req, res, next) => {
         const data = await readFile(filePath, 'utf-8');
         const allBooks = JSON.parse(data);
 
-        let result = genre ? allBooks.books.filter(e => e.genre.toLowerCase() == genre.toLowerCase()) : allBooks.books
+        let result = genre === "all" ? allBooks.books : allBooks?.books?.filter(e => e?.genre?.toLowerCase() == genre?.toLowerCase())
         const start = (page - 1) * limit;
         const end = start + limit;
         const finalResult = result.slice(start, end);
-        return res.status(201).json({
+        return res.status(200).json({
             success: true, message: "All books fetched!", books: finalResult
         })
     } catch (error) {
@@ -62,7 +62,7 @@ export const UpdateBook = catchAsyncErrors(async (req, res, next) => {
 
     try {
         const { id } = req.params
-        
+
         const { title, author, description, price, quantity, genre, publishedYear } = req.body
         if (!title || !author || !description || !price || !quantity || !genre || !publishedYear) return next(new ErrorHandler("All fields are required", 400))
 
@@ -70,10 +70,10 @@ export const UpdateBook = catchAsyncErrors(async (req, res, next) => {
         const data = await readFile(filePath, 'utf-8');
         const allBooks = JSON.parse(data);
         const bookIndex = allBooks.books.findIndex(book => book.id === id);
-        console.log("bookIndex==>",bookIndex)
+
+        console.log("bookIndex==>", bookIndex)
         if (bookIndex === -1) {
             return next(new ErrorHandler("book id is not available!", 400))
-
         }
         allBooks.books[bookIndex] = {
             ...allBooks.books[bookIndex],
@@ -89,6 +89,7 @@ export const UpdateBook = catchAsyncErrors(async (req, res, next) => {
 })
 
 //delete book
+
 export const DeleteBook = catchAsyncErrors(async (req, res, next) => {
 
     try {
@@ -99,7 +100,8 @@ export const DeleteBook = catchAsyncErrors(async (req, res, next) => {
         const allBooks = JSON.parse(data);
 
         const bookIndex = allBooks.books.findIndex(book => book.id === id);
-        console.log("bookIndex==>",bookIndex)
+        console.log("bookIndex==>", bookIndex)
+
         if (bookIndex === -1) {
             return next(new ErrorHandler("Book is not available!", 400))
         }
@@ -107,8 +109,8 @@ export const DeleteBook = catchAsyncErrors(async (req, res, next) => {
         allBooks.books = allBooks.books.filter(book => book.id !== id);
         console.log(allBooks.books)
         await writeFile(filePath, JSON.stringify(allBooks, null, 2), 'utf-8');
-        return res.status(201).json({
-            success: true, message: "Book Deleted!", books: allBooks.books
+        return res.status(200).json({
+            success: true, message: "Book Deleted!"
         })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))

@@ -7,8 +7,8 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 let getDir = process.cwd()
 
-const generateToken = function (email) {
-    return jwt.sign({ email: email }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRE })
+const generateToken = function (email, userId) {
+    return jwt.sign({ email: email, userId: userId }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRE })
 }
 
 export const register = catchAsyncErrors(
@@ -32,7 +32,7 @@ export const register = catchAsyncErrors(
             const allUsers = JSON.parse(data);
             const filterData = allUsers.users.filter(e => e?.email === email)
             if (filterData?.length > 0) return next(new ErrorHandler("User already exists!", 400))
-            let userObj = { ...req.body, id: id }
+            let userObj = { ...req.body, userId: id }
             allUsers.users.push(userObj);
             await writeFile(filePath, JSON.stringify(allUsers, null, 2), 'utf-8');
             return res.status(201).json({
@@ -68,7 +68,7 @@ export const login = catchAsyncErrors(
                 return next(new ErrorHandler("Invalid password!", 400))
             }
 
-            const token = generateToken(email)
+            const token = generateToken(email, filterDataUser.userId)
 
             return res.status(200).cookie("token", token, {
                 expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
