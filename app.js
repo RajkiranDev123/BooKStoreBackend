@@ -7,6 +7,7 @@ import cors from "cors"
 import { errorMiddleware } from "./middlewares/errorMiddleware.js";
 import authRouter from "./routes/authRouter.js"
 import bookRouter from "./routes/bookRouter.js"
+import morgan from "morgan";
 
 
 export const app = express()
@@ -18,6 +19,8 @@ app.use(cookieParser())
 // only works on data not files
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use(morgan('combined'))
 
 
 app.use("/api/v1/auth", authRouter)
